@@ -7,4 +7,5 @@ TODO
 * Pref for # of items on page
 * Controls to collapse / expand summaries
 * Sharing buttons
-
+* Verbosity setting for notifications of background activity?
+* Incremental auto-updating as new items arrive
