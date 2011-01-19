@@ -1,6 +1,8 @@
 TODO
 ----
 
+* Find some better images for widgets in addon-bar
+
 * Delete XPI from github, use downloads to host that
 
 * Find out if page attributes in Places is an insane thing to keep using
