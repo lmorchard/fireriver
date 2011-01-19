@@ -68,7 +68,7 @@ function feedsUpdate (event) {
         var ns = {
             '.feedTitle a': item.feed_title,
             '.feedTitle a @href': item.feed_link,
-            '.title a': item.title,
+            '.title a': item.title || "Untitled",
             '.title a @href': item.link,
             '.favicon @src': item.feed_favicon,
             '.published': ''+ISODateString(item.published),
