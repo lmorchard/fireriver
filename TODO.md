@@ -1,6 +1,12 @@
 TODO
 ----
 
+* Allow filtering by tags on Live Bookmarks
+
+* Allow subfolders in the "Fireriver Feeds" folder, browse by those
+
+* Configurable URL patterns for sites to ignore for feed detection
+
 * Find some better images for widgets in addon-bar
 
 * Delete XPI from github, use downloads to host that
