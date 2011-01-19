@@ -12,8 +12,6 @@ It's probably not worth using right now, and is likely very horrible.
 * Fireriver will use Live Bookmarks in this folder to build a [River of News][]
     page, which you can view by clicking the feed icon on the add-on bar.
 
-* There's a second icon on the add-on bar: It reloads all Live Bookmarks.
-
 * Fireriver creates new Live Bookmarks whenever it notices new feeds on the
     pages you visit.
 

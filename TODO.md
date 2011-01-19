@@ -1,6 +1,9 @@
 TODO
 ----
 
+* Stop using annotations, switch to simple storage?
+    * Or, stick all the augmentations into a single JSON blob at the feed level?
+
 * Try to use top-of-window banner to notify when feed added
     * Allow feedback like "Unsubscribe", "Never subscribe to this domain again"
 
@@ -50,6 +53,8 @@ TODO
     * https://github.com/paulirish/infinite-scroll
 
 * Preference for iframes auto-expanding when visible
+
+* Smooth animation for iframe expansion?
 
 * Retain past items, up to a limit, when parsing new items from feed
 
