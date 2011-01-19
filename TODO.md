@@ -1,6 +1,9 @@
 TODO
 ----
 
+* Try to use top-of-window banner to notify when feed added
+    * Allow feedback like "Unsubscribe", "Never subscribe to this domain again"
+
 * Allow filtering by tags on Live Bookmarks
 
 * Allow subfolders in the "Fireriver Feeds" folder, browse by those
