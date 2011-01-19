@@ -1,7 +1,7 @@
 /**
- * 
+ * Content script for index page UI
  */
-MAX_ITEMS = 50;
+MAX_ITEMS = 250;
     
 onMessage = function onMessage(event) {
     if ('undefined'==typeof(event.type)) { return; }
@@ -12,33 +12,17 @@ onMessage = function onMessage(event) {
     }
 };
 
+/** Initialize the page */
 function init() { 
     $(document).ready(ready);
 }
 
+/** React to page being ready, wire up UI handlers */
 function ready() {
 
-    $('nav a').click(function () {
-        var el = $(this);
-        postMessage("NAV LINK " + el.text());
-        return false;
-    });
-    
-
 }
 
-function historyUpdate (event) {
-    var tmpl_el = $('.history .template.history-item');
-    var par_el = $('.history ul');
-    for (var i=0,item; item=event.items[i]; i++) {
-        tmpl_el.cloneTemplate({
-            'img.favicon @src': item.favicon,
-            'a.title': item.title,
-            'a.title @href': item.uri
-        }).appendTo(par_el);
-    }
-}
-
+/** React to incoming feeds update from addon controller */
 function feedsUpdate (event) {
 
     var items = [],
@@ -51,6 +35,7 @@ function feedsUpdate (event) {
 
         for (var j=0,entry; entry=feed.entries[j]; j++) {
             var item_out = {
+                feed_id: feed.id,
                 feed_title: feed.title,
                 feed_link: feed.link,
                 feed_favicon: feed.favicon,
@@ -87,12 +72,16 @@ function feedsUpdate (event) {
             '.title a': item.title,
             '.title a @href': item.link,
             '.favicon @src': item.feed_favicon,
-            '.summary': item.summary,
-            '.summary_wrap @src': 'data:text/html,'+item.summary,
             '.published': ''+ISODateString(item.published),
             '.published @title': ''+ISODateString(item.published),
-            '.published @datetime': ''+ISODateString(item.published)
+            '.published @datetime': ''+ISODateString(item.published),
+            '.hideFeed @data-id': item.feed_id
         };
+
+        if (item.summary) {
+            // ns['.summary_wrap @src'] = 'data:text/html,'+item.summary;
+            ns['.expandEntry @data-src'] = 'data:text/html,'+item.summary;
+        }
 
         if (last_feed !== item.feed_link) {
             divider_tmpl_el.cloneTemplate(ns).appendTo(par_el);
@@ -101,8 +90,52 @@ function feedsUpdate (event) {
         tmpl_el.cloneTemplate(ns).appendTo(par_el);
     }
 
+    var tmpl_el = $('.hidden-feeds .template');
+    var par_el = $('.hidden-feeds ul');
+    par_el.find('li:not(.template)').remove();
+    var hidden_feeds = event.hidden_feeds;
+    for (var i=0,feed; feed=hidden_feeds[i]; i++) {
+        var ns = {
+            '.feedTitle a': feed.title,
+            '.feedTitle a @href': feed.link,
+            '.favicon @src': feed.favicon,
+            '.unhideFeed @data-id': feed.id
+        };
+        tmpl_el.cloneTemplate(ns).appendTo(par_el);
+    }
+
     $.timeago.settings.refreshMillis = 0;
     $('time.timeago').timeago();
+
+    $('section.feeds > ul li.feed-divider .hideFeed').click(function () {
+        postMessage({ type: 'hideFeed', id: $(this).attr('data-id') });
+        return false;
+    });
+
+    $('section.hidden-feeds > ul li.feed-divider .unhideFeed').click(function () {
+        postMessage({ type: 'unhideFeed', id: $(this).attr('data-id') });
+        return false;
+    });
+
+    $('section.feeds > ul li.feed-entry .expandEntry').click(function () {
+        var src = $(this).attr('data-src');
+        $(this).siblings('.summary_wrap').each(function () {
+            if (this.style.display == 'block') {
+                this.style.display = 'none';
+            } else {
+                if (this.src!=src) { this.src = src; }
+                this.style.display = 'block';
+                /* TODO: Work this out, so we don't have inline JS in the HTML
+                var f = this;
+                f.onload = function () {
+                    f.height=f.contentDocument.body.offsetHeight+16
+                    f = null;
+                }
+                */
+            }
+        });
+        return false;
+    });
     
 }
 

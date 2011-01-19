@@ -71,6 +71,7 @@ section.feeds > ul li.feed-divider .favicon {
     top: 8px;
 }
 section.feeds > ul li.feed-divider h3.feedTitle { 
+    text-shadow: 0 0 4px #ccc;
     margin: 0 24ex 0 0; padding: 0; 
     line-height: 32px;
     position: relative;
@@ -90,6 +91,26 @@ section.feeds > ul li.feed-divider .published {
     line-height: 32px;
     font-size: 75%;
 }
+section.feeds > ul li.feed-divider .hideFeed { 
+    position: absolute;
+    top: 1px; right: 8px;
+    font-size: 100%;
+    border: 1px solid #ccc;
+    padding: 2px 4px;
+    margin: 2px;
+    -moz-box-sizing: border-box;
+
+    background: none repeat scroll 0 0 #ffeeee;
+    border-radius: 3px 3px 3px 3px;
+    box-shadow: 0 -0.5px 0.5px rgba(0, 0, 0, 0.25) inset, 0 1px 2px rgba(0, 0, 0, 0.25);
+    color: #3D3F40;
+
+}
+section.feeds > ul li.feed-divider .hideFeed span { 
+    font-size: 75%;
+    font-weight: bold;
+}
+
 section.feeds > ul li.feed-entry { 
     position: relative;
     margin: 0 32px 0 32px; padding: 0;
@@ -105,13 +126,20 @@ section.feeds > ul li.feed-entry h4.title {
     position: relative;
     font-size: 105%;
 }
+section.feeds > ul li.feed-entry h4.title a {
+    display: block;
+}
 section.feeds > ul li.feed-entry .published {
     position: absolute;
     top: 0px; right: 0px;
     line-height: 24px;
     font-size: 80%;
 } 
-
+section.feeds > ul li.feed-entry .expandEntry {
+    position: absolute;
+    top: -2px; right: -4ex;
+    line-height: 24px;
+}
 section.feeds > ul li.feed-entry p.summary {
     font-family: serif;
     font-size: 100%;
@@ -123,3 +151,91 @@ section.feeds > ul li.feed-entry iframe.summary_wrap {
     padding: 0.5em 1.0em;
     margin: 0.75em 0 1.5em 0;
 }
+
+
+section.hidden-feeds { 
+    width: 750px;
+    margin: 0 auto;
+
+    -moz-box-sizing: border-box;
+    background: none repeat scroll 0 0 #FFFFFF;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.25) inset, 0 1px 2px rgba(0, 0, 0, 0.25);
+    color: #3D3F40;
+    margin-top: -4px;
+    margin-bottom: 15px;
+    padding: 5px 15px 15px 15px;
+    position: relative;
+    
+}
+section.hidden-feeds > ul { 
+    margin: 0 1em 0 1em; padding: 0;
+}
+section.hidden-feeds > ul li { 
+    list-style: none;
+}
+section.hidden-feeds > ul li.feed-divider { 
+    position: relative;
+    border: 1px solid #aaa;
+    margin: 1em 0 1em 0;
+    padding: 0;
+    background: #eee;
+    height: 32px;
+
+    -moz-box-sizing: border-box;
+    background: none repeat scroll 0 0 #FFFFFF;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.25) inset, 0 1px 2px rgba(0, 0, 0, 0.25);
+    color: #3D3F40;
+}
+section.hidden-feeds > ul li.feed-divider:first { 
+    margin-top: 0.5em;
+}
+section.hidden-feeds > ul li.feed-divider .favicon { 
+    position: absolute;
+    left: 8px; 
+    top: 8px;
+}
+section.hidden-feeds > ul li.feed-divider h3.feedTitle { 
+    text-shadow: 0 0 4px #ccc;
+    margin: 0 24ex 0 0; padding: 0; 
+    line-height: 32px;
+    position: relative;
+    left: 32px;
+    font-size: 115%;
+    white-space: nowrap;
+    overflow: hidden;
+}
+section.hidden-feeds > ul li.feed-divider h3.feedTitle a {
+    display: block;
+    color: #333;
+}
+section.hidden-feeds > ul li.feed-divider .published { 
+    display: none;
+    position: absolute;
+    top: 0px; right: 8px;
+    line-height: 32px;
+    font-size: 75%;
+}
+section.hidden-feeds > ul li.feed-divider .unhideFeed { 
+    position: absolute;
+    top: 1px; right: 8px;
+    font-size: 100%;
+    border: 1px solid #ccc;
+    padding: 2px 4px;
+    margin: 2px;
+    -moz-box-sizing: border-box;
+
+    background: none repeat scroll 0 0 #eeffee;
+    border-radius: 3px 3px 3px 3px;
+    box-shadow: 0 -0.5px 0.5px rgba(0, 0, 0, 0.25) inset, 0 1px 2px rgba(0, 0, 0, 0.25);
+    color: #3D3F40;
+
+}
+section.hidden-feeds > ul li.feed-divider .unhideFeed span { 
+    font-size: 75%;
+    font-weight: bold;
+}
+
+
+

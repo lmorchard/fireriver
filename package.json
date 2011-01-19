@@ -1,8 +1,8 @@
 {
     "id": "jid0-fXabM5toeBlTttd9BvQCWdZZwuM", 
     "fullName": "Fireriver",
-    "version": "0.0.1",
-    "description": "A magical River of News that spies on your browsing habits",
+    "version": "0.0.2",
+    "description": "A magical River of News that learns from your browsing",
     "author": "l.m.orchard <l.m.orchard@pobox.com> (http://lmorchard.com)",
     "url": "http://github.com/lmorchard/fireriver",
     "icon": "data/img/blue-rss.png",
