@@ -21,6 +21,9 @@ TODO
 
 * Loading indicator for summary iframes that are in progress
 
+* Try making the feed page build more async?
+    * setTimeout-ify the insertion of each item?
+
 * Do smarter stuff with visit count, so feeds from more visited pages get higher priority
 
 * Refrain from subscribing until page visited 2-3 times (configurable)
@@ -45,6 +48,8 @@ TODO
 
 * Use infinite scroll, only load / render a pageful of items at a time
     * https://github.com/paulirish/infinite-scroll
+
+* Preference for iframes auto-expanding when visible
 
 * Retain past items, up to a limit, when parsing new items from feed
 

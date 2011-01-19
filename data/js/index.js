@@ -121,6 +121,18 @@ function feedsUpdate (event) {
         if (!el.attr('data-src')) { el.hide(); }
     });
 
+    $('section.feeds > ul li.feed-entry').appear(function () {
+        var entry = $(this);
+        setTimeout(function () {
+            var expand = entry.find('a.expandEntry');
+            var ifrm = entry.find('.summary_wrap');
+            ifrm.show();
+            ifrm[0].src = expand.attr('data-src');
+            ifrm = null;
+            expand = null;
+        }, 0.1);
+    });
+
     $('section.feeds > ul li.feed-entry a.expandEntry').click(function () {
         var src = $(this).attr('data-src');
         $(this).siblings('.summary_wrap').each(function () {
