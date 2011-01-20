@@ -1,6 +1,10 @@
 TODO
 ----
 
+* Hide feed detection notification automatically after a few seconds?
+
+* Figure out how to get favicons that aren't cached
+
 * Stop using annotations, switch to simple storage?
     * Or, stick all the augmentations into a single JSON blob at the feed level?
 
@@ -13,9 +17,7 @@ TODO
 
 * Configurable URL patterns for sites to ignore for feed detection
 
-* Find some better images for widgets in addon-bar
-
-* Delete XPI from github, use downloads to host that
+* Find some better images for widget icons in addon-bar
 
 * Find out if page attributes in Places is an insane thing to keep using
 
@@ -29,19 +31,13 @@ TODO
 
 * Do smarter stuff with visit count, so feeds from more visited pages get higher priority
 
-* Refrain from subscribing until page visited 2-3 times (configurable)
-
 * Pref to enable/disable auto-sub of feeds altogether
 
 * Find a good way to do feed scans on idle
 
 * Pref to control feed scan interval
 
-* Checkbox opt-out / hide of detected feeds
-
 * Pref for # of items on page
-
-* Controls to collapse / expand summaries
 
 * Sharing buttons
 

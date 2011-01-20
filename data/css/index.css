@@ -149,7 +149,7 @@ section.feeds > ul li.feed-entry iframe.summary_wrap {
     border: 1px dotted #ccc; 
     display: none;
     padding: 0.5em 1.0em;
-    margin: 0.75em 0 1.5em 0;
+    margin: 0.75em 0 0.75em 0;
 }
 
 
