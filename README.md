@@ -5,7 +5,7 @@ on your browsing habits to find feeds.
 
 It's probably not worth using right now, and is likely very horrible.
 
-## Tips / Notes
+## Tips / Notes / Goals
 
 * Fireriver will create a new bookmark folder named "Fireriver Feeds"
 
@@ -15,11 +15,13 @@ It's probably not worth using right now, and is likely very horrible.
 * Fireriver lets you know whenever it notices a feed on any page you visit, and
     gives you the option to subscribe to that page or ignore it.
 
-* You can add Live Bookmarks to the "Fireriver Feeds" folder, and Fireriver
-    will include them in the river.
+* You can manually add a Live Bookmark to the "Fireriver Feeds" folder, and
+    Fireriver will include them in the river.
 
 * If you delete a Live Bookmark from the "Fireriver Feeds" folder, Fireriver
     will try not to add that feed again.
+
+* Feedriver will try not to show you things you've seen before.
 
 * You can hide feeds you don't care about. Once hidden, you can find them at
     the bottom of the page to reveal again.

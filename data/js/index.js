@@ -121,7 +121,7 @@ function feedsUpdate (event) {
         if (!el.attr('data-src')) { el.hide(); }
     });
 
-    $('section.feeds > ul li.feed-entry').appear(function () {
+    if (false) $('section.feeds > ul li.feed-entry').appear(function () {
         var entry = $(this);
         var expand = entry.find('a.expandEntry');
         var src = expand.attr('data-src');
