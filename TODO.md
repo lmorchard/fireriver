@@ -4,19 +4,20 @@ TODO
 * Bugs
     * Figure out how to get favicons that aren't cached
 
-* Browser chrome UX
+* Chrome UX
     * Find some better images for widget icons in addon-bar
     * Hide feed detection notification after a few seconds?
 
-* River page UX
+* River UX
+    * Build up the river page with something like an insertion sort, to
+        accomodate real-time updates.
+    * Real-time auto-updating as new items arrive
     * Loading indicator for parts of river that are in-progress
     * Preference for iframes auto-expanding when visible
     * Smooth animation for iframe expansion?
-    * Try making the feed page build more async?
-        * setTimeout-ify the insertion of each item?
     * Pref for # of items on page
     * Sharing buttons
-    * Real-time auto-updating as new items arrive
+    * Make visited items disappear after a little while?
     * Use infinite scroll, only load / render a pageful of items at a time
         * https://github.com/paulirish/infinite-scroll
 
@@ -31,6 +32,7 @@ TODO
         * Use a thin-server RSS sync?
     * Look into pubsubhubbub for realtime update cues.
     * Look into [thin-server RSS sync][] for item status
+    * Expose control to change the refresh timing of live bookmarks (could be hazardous)
 
 [thin-server RSS sync]: http://inessential.com/2010/02/08/idea_for_alternative_rss_syncing_system
 
@@ -38,4 +40,6 @@ TODO
     * Allow filtering by tags on Live Bookmarks
     * Allow subfolders in the "Fireriver Feeds" folder, browse by those
     * Configurable URL patterns for sites to ignore for feed detection
-
+    * Currently deferring opening notification box until tab is visible - is
+        there any way to open a notification on a background tab?
+    * L10N... someday?
