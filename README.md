@@ -1,7 +1,6 @@
 # Fireriver
 
-This is an experiment at building a magical River of news in Firefox that spies
-on your browsing habits to find feeds.
+This is an experiment at building a magical River of news in Firefox.
 
 It's probably not worth using right now, and is likely very horrible.
 
@@ -12,10 +11,10 @@ It's probably not worth using right now, and is likely very horrible.
 * Fireriver will use Live Bookmarks in this folder to build a [River of News][]
     page. You can view it by clicking the feed icon on the add-on bar.
 
-* You can manually add a Live Bookmark to the "Fireriver Feeds" folder, and
-    Fireriver will include it in the river.
+* You can add and remove Live Bookmarks in this folder like any other bookmark
+    folder. The changes will be reflected in the river of news display.
 
-* Fireriver will let you know whenever it notices a feed on any page you visit, and
+* Fireriver will alert you whenever it notices a feed on any page you visit, and
     will offer the option to subscribe to that page or ignore it in the future.
 
 * If you leave the Fireriver page open, it will update itself whenever Live
