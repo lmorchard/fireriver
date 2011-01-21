@@ -21,14 +21,16 @@ header hgroup {
     padding: 15px;
 }
 header hgroup h1 {
-    margin: 0; padding: 0 0 0 44px;
-    color: #fff;
+    margin: 0; padding: 0 0 0 0;
     height: 32px;
-    line-height: 32px;
-    background: transparent url(../img/blue-rss.png) no-repeat;
 }
 header hgroup h1 a {
+    margin: 0; padding: 0 0 0 44px;
+    display: block;
     color: #fff;
+    color: #fff;
+    line-height: 32px;
+    background: transparent url(../img/blue-rss.png) no-repeat;
 }
 section.feeds { 
     width: 750px;
