@@ -84,7 +84,7 @@ function ready() {
 
 }
 
-const INSERT_ENTRIES_CHUNK = 5;
+const INSERT_ENTRIES_CHUNK = 25;
 /**
  * Insert a big batch of feed entries in chunks.
  */
