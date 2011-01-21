@@ -27,6 +27,9 @@ header hgroup h1 {
     line-height: 32px;
     background: transparent url(../img/blue-rss.png) no-repeat;
 }
+header hgroup h1 a {
+    color: #fff;
+}
 section.feeds { 
     width: 750px;
     margin: 0 auto;

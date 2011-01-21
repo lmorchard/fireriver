@@ -1,126 +1,72 @@
 /**
  * Content script for index page UI
  */
-MAX_ITEMS = 250;
+//MAX_ITEMS = 250;
     
 onMessage = function onMessage(event) {
     if ('undefined'==typeof(event.type)) { return; }
     switch (event.type) {
         case 'historyUpdate': historyUpdate(event); break;
         case 'feedsUpdate': feedsUpdate(event); break;
+        case 'hiddenFeedsUpdate': hiddenFeedsUpdate(event); break;
         default: break;
     }
 };
 
 /** Initialize the page */
 function init() { 
+    $.timeago.settings.refreshMillis = 0;
+
     $(document).ready(ready);
 }
 
 /** React to page being ready, wire up UI handlers */
 function ready() {
 
-}
-
-/** React to incoming feeds update from addon controller */
-function feedsUpdate (event) {
-
-    var items = [],
-        feeds_seen = {};
-
-    for (var i=0,feed; feed=event.feeds[i]; i++) {
-        
-        if (feeds_seen[feed.id]) { continue; }
-        feeds_seen[feed.id] = 1;
-
-        for (var j=0,entry; entry=feed.entries[j]; j++) {
-            var item_out = {
-                feed_id: feed.id,
-                feed_title: feed.title,
-                feed_link: feed.link,
-                feed_favicon: feed.favicon,
-                title: entry.title,
-                link: entry.link,
-                published: new Date(entry.published),
-                summary: entry.summary
-            };
-            items.push(item_out);
-        }
-
-    }
-
-    items.sort(function (b,a) {
-        var au = new Date(a.published),
-            bu = new Date(b.published);
-        return (au > bu) ? 1 : ( (au==bu) ? 0 : -1 );
-    });
-
-    items = items.slice(0,MAX_ITEMS);
-
-    var divider_tmpl_el = $('.feeds .template.feed-divider');
-    var tmpl_el = $('.feeds .template.feed-entry');
-    var par_el = $('.feeds ul');
-
-    par_el.find('li:not(.template)').remove();
-
-    var last_feed = null;
-    for (var i=0,item; item=items[i]; i++) {
-        var ns = {
-            '.feedTitle a': item.feed_title,
-            '.feedTitle a @href': item.feed_link,
-            '.title a': item.title || "Untitled",
-            '.title a @href': item.link,
-            '.favicon @src': item.feed_favicon,
-            '.published': ''+ISODateString(item.published),
-            '.published @title': ''+ISODateString(item.published),
-            '.published @datetime': ''+ISODateString(item.published),
-            '.hideFeed @data-id': item.feed_id
-        };
-
-        if (item.summary) {
-            // ns['.summary_wrap @src'] = 'data:text/html,'+item.summary;
-            ns['.expandEntry @data-src'] = 'data:text/html,'+item.summary;
-        }
-
-        if (last_feed !== item.feed_id) {
-            divider_tmpl_el.cloneTemplate(ns).appendTo(par_el);
-            last_feed = item.feed_id;
-        }
-        tmpl_el.cloneTemplate(ns).appendTo(par_el);
-    }
-
-    var tmpl_el = $('.hidden-feeds .template');
-    var par_el = $('.hidden-feeds ul');
-    par_el.find('li:not(.template)').remove();
-    var hidden_feeds = event.hidden_feeds;
-    for (var i=0,feed; feed=hidden_feeds[i]; i++) {
-        var ns = {
-            '.feedTitle a': feed.title,
-            '.feedTitle a @href': feed.link,
-            '.favicon @src': feed.favicon,
-            '.unhideFeed @data-id': feed.id
-        };
-        tmpl_el.cloneTemplate(ns).appendTo(par_el);
-    }
-
-    $.timeago.settings.refreshMillis = 0;
-    $('time.timeago').timeago();
-
-    $('section.feeds > ul li.feed-divider .hideFeed').click(function () {
-        postMessage({ type: 'hideFeed', id: $(this).attr('data-id') });
+    // Wire up livemark reload button
+    $('.reloadAllLivemarks').click(function (ev) {
+        postMessage({ type: 'reloadAllLivemarks' });
         return false;
     });
 
-    $('section.hidden-feeds > ul li.feed-divider .unhideFeed').click(function () {
-        postMessage({ type: 'unhideFeed', id: $(this).attr('data-id') });
-        return false;
-    });
+    // Install an event-delegating click handler to catch UI elements in
+    // dynamically inserted feed items.
+    $('section.feeds').click(function (ev) {
 
-    $('section.feeds > ul li.feed-entry a.expandEntry').each(function () {
         var el = $(this);
-        if (!el.attr('data-src')) { el.hide(); }
+        var target = $(ev.target);
+        if ('SPAN' == target[0].tagName) {
+            target = target.parent();
+        }
+        var class = target.attr('class');
+
+        switch (class) {
+
+            case 'hideFeed':
+                postMessage({ type: 'hideFeed', id: target.attr('data-id') });
+                return false;
+
+            case 'unhideFeed':
+                postMessage({ type: 'unhideFeed', id: target.attr('data-id') });
+                return false;
+
+            case 'expandEntry':
+                var src = target.attr('data-src');
+                target.siblings('.summary_wrap').each(function () {
+                    if (this.style.display == 'block') {
+                        this.style.display = 'none';
+                    } else {
+                        if (this.src!=src) { this.src = src; }
+                        this.style.display = 'block';
+                    }
+                });
+                return false;
+        };
+
+        return true;
     });
 
+    /*
     if (false) $('section.feeds > ul li.feed-entry').appear(function () {
         var entry = $(this);
         var expand = entry.find('a.expandEntry');
@@ -134,27 +80,110 @@ function feedsUpdate (event) {
             }, 0.1);
         }
     });
+    */
 
-    $('section.feeds > ul li.feed-entry a.expandEntry').click(function () {
-        var src = $(this).attr('data-src');
-        $(this).siblings('.summary_wrap').each(function () {
-            if (this.style.display == 'block') {
-                this.style.display = 'none';
-            } else {
-                if (this.src!=src) { this.src = src; }
-                this.style.display = 'block';
-                /* TODO: Work this out, so we don't have inline JS in the HTML
-                var f = this;
-                f.onload = function () {
-                    f.height=f.contentDocument.body.offsetHeight+16
-                    f = null;
-                }
-                */
-            }
-        });
-        return false;
-    });
+}
+
+const INSERT_ENTRIES_CHUNK = 5;
+/**
+ * Insert a big batch of feed entries in chunks.
+ */
+function insertFeedEntries(event) {
+    var entries = event.entries;
+    (function () {
+        var cb = arguments.callee;
+        for (var i=0; (i<INSERT_ENTRIES_CHUNK) && (entries.length); i++) {
+            entry = entries.pop();
+            try { insertFeedEntry(entry); }
+            catch (e) { console.error(e); }
+        }
+        if (entries.length) { 
+            setTimeout(cb, 0.1); 
+        }
+    })()
+}
+
+/**
+ * insert a single feed entry.
+ */
+function insertFeedEntry (entry) {
     
+    // Skip if this entry is already in the page.
+    var entry_el_id = 'entry-'+entry.hash;
+    if ($('#'+entry_el_id).length) { return; }
+    
+    var feed = entry.feed;
+
+    // var divider_tmpl_el = $('.feeds .template.feed-divider');
+    var divider_tmpl_el = $('#template-feed-divider');
+    // var tmpl_el = $('.feeds .template.feed-entry');
+    var tmpl_el = $('#template-feed-entry');
+    var par_el = $('.feeds ul');
+
+    var iso_published = ISODateString(new Date(entry.published));
+
+    var ns = {
+        '@id': entry_el_id,
+        '.feedTitle a': feed.title,
+        '.feedTitle a @href': feed.link,
+        '.title a': entry.title || "Untitled",
+        '.title a @href': entry.link,
+        '.favicon @src': feed.favicon,
+        '.published': ''+iso_published,
+        '.published @title': ''+iso_published,
+        '.published @datetime': ''+iso_published,
+        '.hideFeed @data-id': feed.id
+    };
+
+    if (entry.summary) {
+        // ns['.summary_wrap @src'] = 'data:text/html,'+entry.summary;
+        ns['.expandEntry @data-src'] = 'data:text/html,'+entry.summary;
+    }
+
+    /*
+    if (last_feed !== entry.feed_id) {
+        divider_tmpl_el.cloneTemplate(ns).appendTo(par_el);
+        last_feed = entry.feed_id;
+    }
+    */
+
+    var new_el = tmpl_el.cloneTemplate(ns);
+    new_el.find('time.timeago').timeago();
+
+    $('.feeds ul .published').each(function () {
+        var el = $(this);
+        if (iso_published >= el.attr('datetime')) {
+            el.parent().before(new_el);
+            new_el = null;
+            return false;
+        }
+    });
+    if (new_el) { 
+        par_el.append(new_el);
+    }
+
+}
+
+/** React to incoming feeds update from addon controller */
+function feedsUpdate (event) {
+    //$('.feeds ul').find('li:not(.template)').remove();
+    insertFeedEntries({ entries: event.entries });
+}
+
+function hiddenFeedsUpdate (event) {
+    var tmpl_el = $('.hidden-feeds .template');
+    var par_el = $('.hidden-feeds ul');
+    par_el.find('li:not(.template)').remove();
+    var hidden_feeds = event.hidden_feeds;
+    for (var i=0,feed; feed=hidden_feeds[i]; i++) {
+        var ns = {
+            '.feedTitle a': feed.title,
+            '.feedTitle a @href': feed.link,
+            '.favicon @src': feed.favicon,
+            '.unhideFeed @data-id': feed.id
+        };
+        tmpl_el.cloneTemplate(ns).appendTo(par_el);
+    }
 }
 
 function ISODateString(d){

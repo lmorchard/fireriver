@@ -10,21 +10,18 @@ It's probably not worth using right now, and is likely very horrible.
 * Fireriver will create a new bookmark folder named "Fireriver Feeds"
 
 * Fireriver will use Live Bookmarks in this folder to build a [River of News][]
-    page, which you can view by clicking the feed icon on the add-on bar.
-
-* Fireriver lets you know whenever it notices a feed on any page you visit, and
-    gives you the option to subscribe to that page or ignore it.
+    page. You can view it by clicking the feed icon on the add-on bar.
 
 * You can manually add a Live Bookmark to the "Fireriver Feeds" folder, and
-    Fireriver will include them in the river.
+    Fireriver will include it in the river.
 
-* If you delete a Live Bookmark from the "Fireriver Feeds" folder, Fireriver
-    will try not to add that feed again.
+* Fireriver will let you know whenever it notices a feed on any page you visit, and
+    will offer the option to subscribe to that page or ignore it in the future.
 
-* Feedriver will try not to show you things you've seen before.
+* If you leave the Fireriver page open, it will update itself whenever Live
+    Bookmarks refresh with new items.
 
-* You can hide feeds you don't care about. Once hidden, you can find them at
-    the bottom of the page to reveal again.
+* Fireriver will try not to show you things you've seen before.
 
 * Everything Fireriver knows is tied to your Live Bookmarks. If you delete
     them, Fireriver's data goes away too.
