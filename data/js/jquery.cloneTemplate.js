@@ -12,7 +12,10 @@
  */
 jQuery.fn.extend( {
 
-    cloneTemplate: function (data) {
+    cloneTemplate: function (data, escape_text) {
+        if ('undefined' == typeof(escape_text)) {
+            escape_text = 'true';
+        }
         var clones = [];
 
         this.each(function (i) {
@@ -48,8 +51,7 @@ jQuery.fn.extend( {
                     el.attr(attr_name, value);
                 } else {
                     if ('string' === typeof value) {
-                        // Strings work as HTML replacements.
-                        el.html(value);
+                        el[escape_text ? 'text' : 'html'](value);
                     } else if ('undefined' != typeof value.nodeType) {
                         // Elements become content replacements.
                         el.empty().append(value);
