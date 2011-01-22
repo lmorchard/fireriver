@@ -16,7 +16,19 @@
             </hgroup>
         </header>
 
-        <section class="feeds">
+
+        <section class="entries">
+
+            <nav class="folders">
+                <ul class="root">
+                    <li id="template-folder" class="template folder">
+                        <a href="#" class="selectFolder" data-folder-id=""><span class="title">Folder name</span></a>
+                        <ul class="subfolders">
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+
             <ul>
 
                 <li id="template-feed-divider" class="template feed-divider">
@@ -35,7 +47,7 @@
                     <a class="expandEntry" href="#" data-src=""
                         title="Reveal the summary for this feed item">[+]</a>
                     <img class="favicon" src="#" width="16" height="16" />
-                    <h4 class="title"><a href="#" target=_new">Entry title</a></h4>
+                    <h4 class="title"><a href="#" target="_blank">Entry title</a></h4>
                     <time class="published timeago" pubdate 
                         datetime="2000-01-17T17:47:41Z">2000-01-17T17:47:41Z</time>
                     <iframe class="summary_wrap" src="#" scrolling="no" 

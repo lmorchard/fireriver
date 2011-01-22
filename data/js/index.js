@@ -1,27 +1,28 @@
 /**
  * Content script for index page UI
  */
-//MAX_ITEMS = 250;
     
-onMessage = function onMessage(event) {
+/**
+ * Set up listener for messages from chrome.
+ */
+onMessage = function onMessage (event) {
     if ('undefined'==typeof(event.type)) { return; }
     switch (event.type) {
         case 'historyUpdate': historyUpdate(event); break;
-        case 'feedsUpdate': feedsUpdate(event); break;
+        case 'feedsUpdate': insertFeedEntries(event); break;
+        case 'foldersUpdate': foldersUpdate(event); break;
         case 'hiddenFeedsUpdate': hiddenFeedsUpdate(event); break;
         default: break;
     }
 };
 
 /** Initialize the page */
-function init() { 
-    $.timeago.settings.refreshMillis = 0;
-
+function init () { 
     $(document).ready(ready);
 }
 
 /** React to page being ready, wire up UI handlers */
-function ready() {
+function ready () {
 
     // Wire up livemark reload button
     $('.reloadAllLivemarks').click(function (ev) {
@@ -29,15 +30,35 @@ function ready() {
         return false;
     });
 
-    // Install an event-delegating click handler to catch UI elements in
-    // dynamically inserted feed items.
-    $('section.feeds').click(function (ev) {
-
+    // Wire up folder selection links
+    $('nav.folders').click(function (ev) {
         var el = $(this);
         var target = $(ev.target);
-        if ('SPAN' == target[0].tagName) {
-            target = target.parent();
-        }
+        if ('SPAN' == target[0].tagName) { target = target.parent(); }
+        var class = target.attr('class');
+
+        switch (class) {
+            case 'selectFolder':
+                var folder_id = target.attr('data-folder-id');
+
+                $('nav.folders li.selected').removeClass('selected');
+                $('nav.folders #folder-'+folder_id).addClass('selected');
+                $('section.entries > ul').find('li:not(.template)').remove();
+
+                postMessage({ type: 'selectFolder', folder_id: folder_id });
+
+                return false;
+        };
+
+        return true;
+    });
+
+    // Install an event-delegating click handler to catch UI elements in
+    // dynamically inserted feed items.
+    $('section.entries').click(function (ev) {
+        var el = $(this);
+        var target = $(ev.target);
+        if ('SPAN' == target[0].tagName) { target = target.parent(); }
         var class = target.attr('class');
 
         switch (class) {
@@ -61,13 +82,14 @@ function ready() {
                     }
                 });
                 return false;
+
         };
 
         return true;
     });
 
-    /*
-    if (false) $('section.feeds > ul li.feed-entry').appear(function () {
+    /* TODO: Work out how to handle dividers in the dynamic insertion scheme
+    if (false) $('section.entries > ul li.feed-entry').appear(function () {
         var entry = $(this);
         var expand = entry.find('a.expandEntry');
         var src = expand.attr('data-src');
@@ -84,23 +106,66 @@ function ready() {
 
 }
 
-const INSERT_ENTRIES_CHUNK = 25;
+/**
+ * Update the folder tree selection display.
+ */
+function foldersUpdate (event, selected_id) {
+
+    if (!selected_id) { selected_id = event.root_id; }
+
+    var folders = event.folders;
+    var tmpl_el = $('#template-folder');
+    var root_el = $('.folders > ul.root');
+
+    root_el.find('li:not(.template)').remove();
+    if (folders.length > 1) { $('.folders').show(); }
+
+    for (var i=0; i<folders.length; i++) {
+        var [ folder_id, folder_title, parent_id ] = folders[i];
+
+        if (folder_id == event.root_id) {
+            folder_title = 'All Feeds';
+        }
+
+        var par_el = $('#folder-'+parent_id+' > ul.subfolders');
+        if (!par_el.length) { par_el = root_el; }
+
+        var new_el = tmpl_el.cloneTemplate({
+            '@id': 'folder-'+folder_id,
+            '.title': folder_title,
+            '.selectFolder @data-folder-id': folder_id
+        }).appendTo(par_el);
+
+        if (folder_id == selected_id) {
+            new_el.addClass('selected');
+        }
+
+    }
+
+}
+
+var INSERT_ENTRIES_CHUNK = 10;
+var current_update_fn = null;
+
 /**
  * Insert a big batch of feed entries in chunks.
  */
-function insertFeedEntries(event) {
+function insertFeedEntries (event) {
     var entries = event.entries;
-    (function () {
+
+    ( function () {
         var cb = arguments.callee;
         for (var i=0; (i<INSERT_ENTRIES_CHUNK) && (entries.length); i++) {
             entry = entries.pop();
             try { insertFeedEntry(entry); }
             catch (e) { console.error(e); }
         }
-        if (entries.length) { 
-            setTimeout(cb, 0.1); 
-        }
-    })()
+
+        $.timeago.settings.refreshMillis = 0;
+        $('time.timeago').timeago();
+        
+        if (entries.length) { setTimeout(cb, 0.1); }
+    })();
 }
 
 /**
@@ -114,11 +179,8 @@ function insertFeedEntry (entry) {
     
     var feed = entry.feed;
 
-    // var divider_tmpl_el = $('.feeds .template.feed-divider');
-    var divider_tmpl_el = $('#template-feed-divider');
-    // var tmpl_el = $('.feeds .template.feed-entry');
     var tmpl_el = $('#template-feed-entry');
-    var par_el = $('.feeds ul');
+    var par_el = $('section.entries ul');
 
     var iso_published = ISODateString(new Date(entry.published));
 
@@ -136,21 +198,12 @@ function insertFeedEntry (entry) {
     };
 
     if (entry.summary) {
-        // ns['.summary_wrap @src'] = 'data:text/html,'+entry.summary;
         ns['.expandEntry @data-src'] = 'data:text/html,'+entry.summary;
     }
 
-    /*
-    if (last_feed !== entry.feed_id) {
-        divider_tmpl_el.cloneTemplate(ns).appendTo(par_el);
-        last_feed = entry.feed_id;
-    }
-    */
-
     var new_el = tmpl_el.cloneTemplate(ns);
-    new_el.find('time.timeago').timeago();
 
-    $('.feeds ul .published').each(function () {
+    $('section.entries ul .published').each(function () {
         var el = $(this);
         if (iso_published >= el.attr('datetime')) {
             el.parent().before(new_el);
@@ -164,12 +217,9 @@ function insertFeedEntry (entry) {
 
 }
 
-/** React to incoming feeds update from addon controller */
-function feedsUpdate (event) {
-    //$('.feeds ul').find('li:not(.template)').remove();
-    insertFeedEntries({ entries: event.entries });
-}
-
+/**
+ * Update the list of hidden feeds.
+ */
 function hiddenFeedsUpdate (event) {
     var tmpl_el = $('.hidden-feeds .template');
     var par_el = $('.hidden-feeds ul');
@@ -186,7 +236,11 @@ function hiddenFeedsUpdate (event) {
     }
 }
 
-function ISODateString(d){
+/** 
+ * Format a date object as ISO8601 
+ * TODO: extract into a library
+ */
+function ISODateString (d) {
     function pad(n){return n<10 ? '0'+n : n}
     return d.getUTCFullYear()+'-'
     + pad(d.getUTCMonth()+1)+'-'
@@ -195,6 +249,5 @@ function ISODateString(d){
     + pad(d.getUTCMinutes())+':'
     + pad(d.getUTCSeconds())+'Z';
 }
-
 
 init();
