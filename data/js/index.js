@@ -2,9 +2,7 @@
  * Content script for index page UI
  */
     
-/**
- * Set up listener for messages from chrome.
- */
+/** Set up listener for messages from chrome. */
 onMessage = function onMessage (event) {
     if ('undefined'==typeof(event.type)) { return; }
     switch (event.type) {
@@ -23,14 +21,23 @@ function init () {
 
 /** React to page being ready, wire up UI handlers */
 function ready () {
+    $('time.timeago').timeago();
+    wireUpLivemarkReload();
+    wireUpFoldersNav();
+    wireUpFeedEntries();
+    wireUpHiddenFeeds();
+}
 
-    // Wire up livemark reload button
+/** Wire up livemark reload button */
+function wireUpLivemarkReload () {
     $('.reloadAllLivemarks').click(function (ev) {
         postMessage({ type: 'reloadAllLivemarks' });
         return false;
     });
+}
 
-    // Wire up folder selection links
+/** Wire up folder selection links */
+function wireUpFoldersNav () {
     $('nav.folders').click(function (ev) {
         var el = $(this);
         var target = $(ev.target);
@@ -40,11 +47,15 @@ function ready () {
         switch (class) {
             case 'selectFolder':
                 var folder_id = target.attr('data-folder-id');
-
+                
+                // Change the folder indicated as selected.
                 $('nav.folders li.selected').removeClass('selected');
                 $('nav.folders #folder-'+folder_id).addClass('selected');
+
+                // Clear the display of entries in anticipation of an update.
                 $('section.entries > ul').find('li:not(.template)').remove();
 
+                // Ask chrome for an update of feed entries.
                 postMessage({ type: 'selectFolder', folder_id: folder_id });
 
                 return false;
@@ -52,58 +63,116 @@ function ready () {
 
         return true;
     });
+}
 
-    // Install an event-delegating click handler to catch UI elements in
-    // dynamically inserted feed items.
+/**
+ * Install an event-delegating click handler to catch UI elements in
+ * dynamically inserted feed items.
+ */
+function wireUpFeedEntries () {
     $('section.entries').click(function (ev) {
         var el = $(this);
         var target = $(ev.target);
-        if ('SPAN' == target[0].tagName) { target = target.parent(); }
+        if ('SPAN' == target[0].tagName || target.hasClass('parentActive')) { 
+            target = target.parent();
+        }
         var class = target.attr('class');
+        var feed_entry = target.parent();
 
         switch (class) {
 
+            case 'title':
+                // First click on title reveals summary; second click opens the link.
+                // Also, ignore click if any modifiers are held, so that
+                // cmd-click to open in new tab works.
+                // TODO: Decide if this is too confusing.
+                var any_modifiers = ev.shiftKey || ev.altKey || ev.ctrlKey || ev.metaKey;
+                if (any_modifiers || feed_entry.hasClass('summary-revealed')) {
+                    return true;
+                } else {
+                    return toggleSummaryReveal(feed_entry);
+                }
+
+            // Clicks on both timestamp and outline handle expand/collapse summary.
+            case 'published timeago':
+            case 'expandEntry':
+                if (ev.shiftKey) {
+                    // Holding shift while clicking handle toggles all entry summaries.
+                    $('section.entries > ul').find('li:not(.template)').each(function () {
+                        toggleSummaryReveal($(this));
+                    });
+                    return false;
+                } else {
+                    // Just toggle this one summary.
+                    return toggleSummaryReveal(feed_entry);
+                }
+
+            // TODO: Enable feed dividers again to make these work.
             case 'hideFeed':
                 postMessage({ type: 'hideFeed', id: target.attr('data-id') });
                 return false;
-
+                
             case 'unhideFeed':
                 postMessage({ type: 'unhideFeed', id: target.attr('data-id') });
-                return false;
-
-            case 'expandEntry':
-                var src = target.attr('data-src');
-                target.siblings('.summary_wrap').each(function () {
-                    if (this.style.display == 'block') {
-                        this.style.display = 'none';
-                    } else {
-                        if (this.src!=src) { this.src = src; }
-                        this.style.display = 'block';
-                    }
-                });
                 return false;
 
         };
 
         return true;
     });
+}
 
-    /* TODO: Work out how to handle dividers in the dynamic insertion scheme
-    if (false) $('section.entries > ul li.feed-entry').appear(function () {
-        var entry = $(this);
-        var expand = entry.find('a.expandEntry');
-        var src = expand.attr('data-src');
-        if (src) {
-            setTimeout(function () {
-                var ifrm = entry.find('.summary_wrap');
-                ifrm.show();
-                ifrm[0].src = src;
-                ifrm = null;
-            }, 0.1);
-        }
-    });
-    */
+/**
+ * Wire up a handler for revealing hidden feeds
+ */
+function wireUpHiddenFeeds () {
+    // TODO: Work out how to handle dividers in the dynamic insertion scheme
+}
 
+/** Expand the summary iframe for an entry */
+function toggleSummaryReveal (feed_entry, force) {
+    var ANIM_TIME = 500;
+
+    // TODO: Work out logic of forcing open / closed based on first item's
+    // state in list in mass operation
+
+    var src = feed_entry.find('.expandEntry').attr('data-src');
+    if (!src) { return; }
+    var summary = feed_entry.find('.summary_wrap');
+
+    if (feed_entry.hasClass('summary-revealed')) {
+        
+        // Hide the summary iframe
+        summary.animate({
+            height: 0
+        }, ANIM_TIME, function () {
+            feed_entry.removeClass('summary-revealed');
+        });
+
+    } else if (summary[0].src == src) { 
+        
+        // Reveal the summary iframe, already loaded
+        feed_entry.addClass('summary-revealed');
+        summary.animate({
+            height: summary[0].contentDocument.body.offsetHeight+8
+        }, ANIM_TIME);
+    
+    } else {
+
+        // Load the summary iframe content, then reveal it.
+        feed_entry.addClass('summary-loading');
+        summary[0].src = src; 
+        summary[0].addEventListener('load', function (ev) {
+            feed_entry.removeClass('summary-loading');
+            feed_entry.addClass('summary-revealed');
+            summary.animate({
+                height: summary[0].contentDocument.body.offsetHeight+8
+            }, ANIM_TIME);
+        }, true);
+
+    }
+
+    return false;
 }
 
 /**
@@ -161,7 +230,6 @@ function insertFeedEntries (event) {
             catch (e) { console.error(e); }
         }
 
-        $.timeago.settings.refreshMillis = 0;
         $('time.timeago').timeago();
         
         if (entries.length) { setTimeout(cb, 0.1); }

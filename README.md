@@ -14,6 +14,9 @@ It's probably not worth using right now, and is likely very horrible.
 * You can add and remove Live Bookmarks in this folder like any other bookmark
     folder. The changes will be reflected in the river of news display.
 
+* If you organize your Live Bookmarks with folders, Fireriver will let you view
+    items filtered by those folders.
+
 * Fireriver will alert you whenever it notices a feed on any page you visit, and
     will offer the option to subscribe to that page or ignore it in the future.
 
