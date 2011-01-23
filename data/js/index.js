@@ -47,22 +47,29 @@ function wireUpFoldersNav () {
         switch (class) {
             case 'selectFolder':
                 var folder_id = target.attr('data-folder-id');
-                
-                // Change the folder indicated as selected.
-                $('nav.folders li.selected').removeClass('selected');
-                $('nav.folders #folder-'+folder_id).addClass('selected');
-
-                // Clear the display of entries in anticipation of an update.
-                $('section.entries > ul').find('li:not(.template)').remove();
-
-                // Ask chrome for an update of feed entries.
-                postMessage({ type: 'selectFolder', folder_id: folder_id });
-
-                return false;
+                selectFolder(folder_id);
         };
 
         return true;
     });
+}
+
+/** Select a folder in the sidebar nav */
+function selectFolder (folder_id) {
+    // Change the folder indicated as selected.
+    $('nav.folders li.selected').removeClass('selected');
+    $('nav.folders #folder-'+folder_id).addClass('selected');
+
+    // Clear the display of entries in anticipation of an update.
+    $('section.entries > ul').find('li:not(.template)').remove();
+
+    // Clear hidden feeds in anticipation of updates.
+    $('.hidden-feeds > ul > li:not(.template)').remove();
+
+    // Ask chrome for an update of feed entries.
+    postMessage({ type: 'selectFolder', folder_id: folder_id });
+
+    return false;
 }
 
 /**
@@ -110,10 +117,12 @@ function wireUpFeedEntries () {
             // TODO: Enable feed dividers again to make these work.
             case 'hideFeed':
                 postMessage({ type: 'hideFeed', id: target.attr('data-id') });
+                selectFolder($('nav.folders li.selected .selectFolder').attr('data-folder-id'));
                 return false;
                 
             case 'unhideFeed':
                 postMessage({ type: 'unhideFeed', id: target.attr('data-id') });
+                selectFolder($('nav.folders li.selected .selectFolder').attr('data-folder-id'));
                 return false;
 
         };
@@ -126,7 +135,24 @@ function wireUpFeedEntries () {
  * Wire up a handler for revealing hidden feeds
  */
 function wireUpHiddenFeeds () {
-    // TODO: Work out how to handle dividers in the dynamic insertion scheme
+    $('section.hidden-feeds').click(function (ev) {
+        var el = $(this);
+        var target = $(ev.target);
+        if ('SPAN' == target[0].tagName || target.hasClass('parentActive')) { 
+            target = target.parent();
+        }
+        var class = target.attr('class');
+        var feed_entry = target.parent();
+
+        switch (class) {
+            case 'unhideFeed':
+                postMessage({ type: 'unhideFeed', id: target.attr('data-id') });
+                selectFolder($('nav.folders li.selected .selectFolder').attr('data-folder-id'));
+                return false;
+        };
+
+        return true;
+    });
 }
 
 /** Expand the summary iframe for an entry */
@@ -231,9 +257,26 @@ function insertFeedEntries (event) {
         }
 
         $('time.timeago').timeago();
+        adjustFeedTitles();
         
         if (entries.length) { setTimeout(cb, 0.1); }
     })();
+
+}
+
+/**
+ * Reveal feed titles at the feed transition boundaries between entries.
+ */
+function adjustFeedTitles () {
+    $('section.entries li.feed-entry').removeClass('feed-title-shown');
+    $('section.entries li.feed-entry').each(function () {
+        var entry = $(this);
+        var curr_feed_title = entry.find('.feedTitle');
+        var prev_feed_title = entry.prev('li').find('.feedTitle');
+        if (curr_feed_title.attr('data-feed-id') != prev_feed_title.attr('data-feed-id')) {
+            entry.addClass('feed-title-shown');
+        }
+    });
 }
 
 /**
@@ -254,6 +297,7 @@ function insertFeedEntry (entry) {
 
     var ns = {
         '@id': entry_el_id,
+        '.feedTitle @data-feed-id': feed.id,
         '.feedTitle a': feed.title,
         '.feedTitle a @href': feed.link,
         '.title a': entry.title || "Untitled",
@@ -289,9 +333,8 @@ function insertFeedEntry (entry) {
  * Update the list of hidden feeds.
  */
 function hiddenFeedsUpdate (event) {
-    var tmpl_el = $('.hidden-feeds .template');
-    var par_el = $('.hidden-feeds ul');
-    par_el.find('li:not(.template)').remove();
+    var tmpl_el = $('#template-hidden-feed');
+    var par_el = $('.hidden-feeds > ul');
     var hidden_feeds = event.hidden_feeds;
     for (var i=0,feed; feed=hidden_feeds[i]; i++) {
         var ns = {

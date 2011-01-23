@@ -49,75 +49,12 @@ section.entries {
     position: relative;
     
 }
-section.entries > ul { 
+section.entries > ul {
     margin: 0 1em 0 1em; padding: 0;
 }
 section.entries > ul li { 
     list-style: none;
 }
-section.entries > ul li.feed-divider { 
-    position: relative;
-    border: 1px solid #aaa;
-    margin: 1em 0 1em 0;
-    padding: 0;
-    background: #eee;
-    height: 32px;
-
-    -moz-box-sizing: border-box;
-    background: none repeat scroll 0 0 #FFFFFF;
-    border-radius: 5px 5px 5px 5px;
-    box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.25) inset, 0 1px 2px rgba(0, 0, 0, 0.25);
-    color: #3D3F40;
-}
-section.entries > ul li.feed-divider:first { 
-    margin-top: 0.5em;
-}
-section.entries > ul li.feed-divider .favicon { 
-    position: absolute;
-    left: 8px; 
-    top: 8px;
-}
-section.entries > ul li.feed-divider h3.feedTitle { 
-    text-shadow: 0 0 4px #ccc;
-    margin: 0 24ex 0 0; padding: 0; 
-    line-height: 32px;
-    position: relative;
-    left: 32px;
-    font-size: 115%;
-    white-space: nowrap;
-    overflow: hidden;
-}
-section.entries > ul li.feed-divider h3.feedTitle a {
-    display: block;
-    color: #333;
-}
-section.entries > ul li.feed-divider .published { 
-    display: none;
-    position: absolute;
-    top: 0px; right: 8px;
-    line-height: 32px;
-    font-size: 75%;
-}
-section.entries > ul li.feed-divider .hideFeed { 
-    position: absolute;
-    top: 1px; right: 8px;
-    font-size: 100%;
-    border: 1px solid #ccc;
-    padding: 2px 4px;
-    margin: 2px;
-    -moz-box-sizing: border-box;
-
-    background: none repeat scroll 0 0 #ffeeee;
-    border-radius: 3px 3px 3px 3px;
-    box-shadow: 0 -0.5px 0.5px rgba(0, 0, 0, 0.25) inset, 0 1px 2px rgba(0, 0, 0, 0.25);
-    color: #3D3F40;
-
-}
-section.entries > ul li.feed-divider .hideFeed span { 
-    font-size: 75%;
-    font-weight: bold;
-}
-
 section.entries > ul li.feed-entry { 
     position: relative;
     margin: 0 32px 0 32px; padding: 0;
@@ -127,11 +64,61 @@ section.entries > ul li.feed-entry .favicon {
     left: 0px; 
     top: 0px;
 }
+section.entries > ul li.feed-entry h3.feedTitle {
+    display: none;
+    margin-top: 1em;
+    width: 100%;
+}
+section.entries > ul li.feed-entry h3.feedTitle a {
+    border-radius: 5px 0px 0px 5px;
+    padding: 6px 4px;
+    font-size: 10px;
+    text-align: right;
+    display: block;
+    background-color: #21496C;
+    background: #41698c;
+    color: #fff;
+    box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.25) inset, 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+section.entries > ul li.feed-entry.feed-title-shown h3.feedTitle {
+    display: block;
+}
+
+section.entries > ul li.feed-entry h3.feedTitle a {
+    border-radius: 5px 5px 5px 5px;
+    padding: 6px 4px 6px 24px;
+    font-size: 10px;
+    display: block;
+    background-color: #21496C;
+    background: #41698c;
+    color: #fff;
+    box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.25) inset, 0 1px 2px rgba(0, 0, 0, 0.25);
+    
+    text-align: left;
+    font-size: 16px;
+}
+section.entries > ul li.feed-entry.feed-title-shown h3.feedTitle {
+    display: block;
+}
+section.entries > ul li.feed-entry.feed-title-shown .favicon { 
+    position: absolute;
+    height: 24px;
+    width: 24px;
+    left: -10px; 
+    top: 4px;
+}
+section.entries > ul li.feed-entry.feed-title-shown .published { 
+    top: 44px; right: 0px;
+}
+section.entries > ul li.feed-entry.feed-title-shown .expandEntry {
+    top: 44px; right: -4ex;
+}
+
 section.entries > ul li.feed-entry h4.title {
     margin: 0.75em 18ex 0.25em 24px; 
     padding: 0; 
     position: relative;
-    font-size: 105%;
+    font-size: 100%;
 }
 section.entries > ul li.feed-entry h4.title a {
     display: block;
@@ -179,6 +166,28 @@ section.entries > ul li.summary-revealed iframe.summary_wrap {
     display: block;
 }
 section.entries > ul li.summary-loading iframe.summary_wrap {
+    display: block;
+}
+section.entries > ul li.feed-entry .hideFeed { 
+    position: absolute;
+    top: 2px; right: 8px;
+    font-size: 100%;
+    border: 1px solid #ccc;
+    padding: 2px 4px;
+    margin: 2px;
+    -moz-box-sizing: border-box;
+
+    background: #C8D0D6;
+    border-radius: 3px 3px 3px 3px;
+    box-shadow: 0 -0.5px 0.5px rgba(0, 0, 0, 0.25) inset, 0 1px 2px rgba(0, 0, 0, 0.25);
+    color: #333;
+    display: none;
+}
+section.entries > ul li.feed-entry .hideFeed span { 
+    font-size: 75%;
+    font-weight: bold;
+}
+section.entries > ul li.feed-entry.feed-title-shown .hideFeed { 
     display: block;
 }
 
@@ -246,8 +255,6 @@ nav.folders > ul li.selected > a:before {
 }
 
 section.hidden-feeds { 
-    display: none;
-
     width: 750px;
     margin: 0 auto;
 
@@ -268,68 +275,76 @@ section.hidden-feeds > ul {
 section.hidden-feeds > ul li { 
     list-style: none;
 }
-section.hidden-feeds > ul li.feed-divider { 
-    position: relative;
-    border: 1px solid #aaa;
-    margin: 1em 0 1em 0;
-    padding: 0;
-    background: #eee;
-    height: 32px;
 
-    -moz-box-sizing: border-box;
-    background: none repeat scroll 0 0 #FFFFFF;
-    border-radius: 5px 5px 5px 5px;
-    box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.25) inset, 0 1px 2px rgba(0, 0, 0, 0.25);
-    color: #3D3F40;
-}
-section.hidden-feeds > ul li.feed-divider:first { 
-    margin-top: 0.5em;
-}
-section.hidden-feeds > ul li.feed-divider .favicon { 
-    position: absolute;
-    left: 8px; 
-    top: 8px;
-}
-section.hidden-feeds > ul li.feed-divider h3.feedTitle { 
-    text-shadow: 0 0 4px #ccc;
-    margin: 0 24ex 0 0; padding: 0; 
-    line-height: 32px;
+
+
+section.hidden-feeds > ul li.feed-entry { 
     position: relative;
-    left: 32px;
-    font-size: 115%;
-    white-space: nowrap;
-    overflow: hidden;
+    margin: 0 32px 0 32px; padding: 0;
 }
-section.hidden-feeds > ul li.feed-divider h3.feedTitle a {
+section.hidden-feeds > ul li.feed-entry .favicon { 
+    position: absolute;
+    left: 0px; 
+    top: 0px;
+}
+section.hidden-feeds > ul li.feed-entry h3.feedTitle {
+    margin-top: 1em;
+    width: 100%;
+}
+section.hidden-feeds > ul li.feed-entry h3.feedTitle a {
+    border-radius: 5px 0px 0px 5px;
+    padding: 6px 4px;
+    font-size: 10px;
+    text-align: right;
     display: block;
-    color: #333;
+    background-color: #21496C;
+    background: #41698c;
+    color: #fff;
+    box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.25) inset, 0 1px 2px rgba(0, 0, 0, 0.25);
 }
-section.hidden-feeds > ul li.feed-divider .published { 
-    display: none;
-    position: absolute;
-    top: 0px; right: 8px;
-    line-height: 32px;
-    font-size: 75%;
+section.hidden-feeds > ul li.feed-entry h3.feedTitle {
+    display: block;
 }
-section.hidden-feeds > ul li.feed-divider .unhideFeed { 
+
+section.hidden-feeds > ul li.feed-entry h3.feedTitle a {
+    border-radius: 5px 5px 5px 5px;
+    padding: 6px 4px 6px 24px;
+    font-size: 10px;
+    display: block;
+    background-color: #21496C;
+    background: #41698c;
+    color: #fff;
+    box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.25) inset, 0 1px 2px rgba(0, 0, 0, 0.25);
+    
+    text-align: left;
+    font-size: 16px;
+}
+section.hidden-feeds > ul li.feed-entry h3.feedTitle {
+    display: block;
+}
+section.hidden-feeds > ul li.feed-entry .favicon { 
     position: absolute;
-    top: 1px; right: 8px;
+    height: 24px;
+    width: 24px;
+    left: -10px; 
+    top: 4px;
+}
+section.hidden-feeds > ul li.feed-entry .unhideFeed { 
+    position: absolute;
+    top: 2px; right: 8px;
     font-size: 100%;
     border: 1px solid #ccc;
     padding: 2px 4px;
     margin: 2px;
     -moz-box-sizing: border-box;
 
-    background: none repeat scroll 0 0 #eeffee;
+    background: #C8D0D6;
     border-radius: 3px 3px 3px 3px;
     box-shadow: 0 -0.5px 0.5px rgba(0, 0, 0, 0.25) inset, 0 1px 2px rgba(0, 0, 0, 0.25);
-    color: #3D3F40;
-
+    color: #333;
+    display: block;
 }
-section.hidden-feeds > ul li.feed-divider .unhideFeed span { 
+section.hidden-feeds > ul li.feed-entry .unhideFeed span { 
     font-size: 75%;
     font-weight: bold;
 }
-
-
-

@@ -31,22 +31,16 @@
 
             <ul>
 
-                <li id="template-feed-divider" class="template feed-divider">
-                    <img class="favicon" src="#" width="16" height="16" />
-                    <h3 class="feedTitle">
-                        <a href="#" target=_new">Feed title</a>
-                    </h3>
-                    <time class="published" 
-                        datetime="2000-01-17T17:47:41Z">2000-01-17T17:47:41Z</time>
-                    <a class="hideFeed" 
-                        title="Hide items from this feed"
-                        href="#" data-id=""><span>Hide</span></a>
-                </li>
-                
                 <li id="template-feed-entry" class="template hentry feed-entry">
                     <a class="expandEntry" href="#" data-src=""
                         title="Reveal the summary for this feed item">[+]</a>
-                    <img class="favicon" src="#" width="16" height="16" />
+                    <img class="favicon" src="img/blue-rss.png" width="16" height="16" />
+                    <h3 class="feedTitle hidden">
+                        <a href="#" target=_new">Feed title</a>
+                    </h3>
+                    <a class="hideFeed" 
+                        title="Hide items from this feed"
+                        href="#" data-id=""><span>Hide</span></a>
                     <h4 class="title"><a href="#" class="parentActive" 
                             target="_blank">Entry title</a></h4>
                     <time class="published timeago" pubdate 
@@ -60,17 +54,15 @@
 
         <section class="hidden-feeds">
             <ul>
-
-                <li class="template feed-divider">
-                    <img class="favicon" src="#" width="16" height="16" />
-                    <h3 class="feedTitle">
+                <li id="template-hidden-feed" class="template feed-entry">
+                    <img class="favicon" src="img/blue-rss.png" width="16" height="16" />
+                    <h3 class="feedTitle hidden">
                         <a href="#" target=_new">Feed title</a>
                     </h3>
                     <a class="unhideFeed" 
                         title="Resume showing items from this feed"
                         href="#" data-id=""><span>Reveal</span></a>
                 </li>
-
             </ul>
         </section>
 
