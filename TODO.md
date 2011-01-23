@@ -2,17 +2,20 @@ TODO
 ----
 
 * Bugs
-    * Figure out how to get favicons that aren't cached
+    * Revisit real-time updates, which seem broken now with folder views
+    * Figure out how to better to chunked item insertion
+        * ...and cancellation thereof when switching folders in the middle of
+            an update
 
 * River UX
+    * Update folder nav list in response to bookmark observer seeing folder 
+        add / move / remove
     * Rework flat list of functions for UI handling into object wrapped around
         worker instance for index UI
     * Make page header float down along with scrolling, anticipating that it
         may hold UI controls in the very near future
     * Add first-run panel with doco on the addon, hide after first run
-    * Loading indicator for parts of river that are in-progress
     * Preference for iframes auto-expanding when visible
-    * Smooth animation for iframe expansion?
     * Pref for # of items on page
     * Sharing / read later / star it / flag it buttons
     * Make clicked / visited items disappear after a little while?
@@ -21,7 +24,6 @@ TODO
         * Any way to use generators across the worker message channel separation?
 
 * Chrome UX
-    * Move "reload all bookmarks" to river UI
     * Find some better images for widget icons in addon-bar
     * Hide feed detection notification after a few seconds?
 
