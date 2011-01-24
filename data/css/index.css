@@ -229,6 +229,17 @@ section.entries > ul li.feed-entry .hideFeed span {
 section.entries > ul li.feed-entry.feed-title-shown .hideFeed { 
     display: block;
 }
+section.entries > ul li.summary-nocontent {
+}
+section.entries > ul li.summary-nocontent iframe.summary_wrap {
+    display: none;
+}
+section.entries > ul li.summary-nocontent .expandEntry {
+    display: none;
+}
+section.entries > ul li.summary-nocontent .published {
+    cursor: default;
+}
 
 nav.folders {
     display: none;

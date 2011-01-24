@@ -1,7 +1,7 @@
 /**
  * Content script for index page UI
  */
-var ENTRIES_PAGE_LEN = 25;
+var ENTRIES_PAGE_LEN = 10;
 var pending_entries = [];
 var summary_frame_css = '';
     
@@ -100,7 +100,9 @@ function wireUpFeedEntries () {
                 // cmd-click to open in new tab works.
                 // TODO: Decide if this is too confusing.
                 var any_modifiers = ev.shiftKey || ev.altKey || ev.ctrlKey || ev.metaKey;
-                if (any_modifiers || feed_entry.hasClass('summary-revealed')) {
+                if (feed_entry.hasClass('summary-nocontent')) {
+                    return true;
+                } else if (any_modifiers || feed_entry.hasClass('summary-revealed')) {
                     return true;
                 } else {
                     return toggleSummaryReveal(feed_entry);
@@ -109,7 +111,9 @@ function wireUpFeedEntries () {
             // Clicks on both timestamp and outline handle expand/collapse summary.
             case 'published timeago':
             case 'expandEntry':
-                if (ev.shiftKey) {
+                if (feed_entry.hasClass('summary-nocontent')) {
+                    return true;
+                } else if (ev.shiftKey) {
                     // Holding shift while clicking handle toggles all entry summaries.
                     $('section.entries > ul').find('li:not(.template)').each(function () {
                         toggleSummaryReveal($(this));
@@ -336,18 +340,24 @@ function insertEntry (entry) {
 
     var new_el = tmpl_el.cloneTemplate(ns);
 
+    if (!entry.summary) {
+        new_el.addClass('summary-nocontent');
+    } else {
+        setTimeout( function () {
+            toggleSummaryReveal(new_el);
+        }, 1);
+    }
+
+    var inserted = false;
     $('section.entries ul .published').each(function () {
         var el = $(this);
         if (iso_published > el.attr('datetime')) {
             el.parent().before(new_el);
-            new_el = null;
+            inserted = true;
             return false;
         }
     });
-
-    if (new_el) { 
-        par_el.append(new_el);
-    }
+    if (!inserted) { par_el.append(new_el); }
 
 }
 

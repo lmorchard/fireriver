@@ -5,6 +5,7 @@ TODO
     * Revisit real-time updates, which seem broken now with folder views
 
 * River UX
+    * Disable / hide summary reveal control where summary content is missing
     * Real-time updates to feed display currently visible when new items come in.
     * Update folder nav list in response to bookmark observer seeing folder 
         add / move / remove
@@ -17,6 +18,7 @@ TODO
     * Pref for # of items on page
     * Sharing / read later / star it / flag it buttons
     * Make clicked / visited items disappear after a little while?
+    * Key modifier (eg. alt?) to toggle summaries for entries within a feed?
 
 * Chrome UX
     * Some indication that a feed refresh is in progress
