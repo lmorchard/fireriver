@@ -3,11 +3,9 @@ TODO
 
 * Bugs
     * Revisit real-time updates, which seem broken now with folder views
-    * Figure out how to better to chunked item insertion
-        * ...and cancellation thereof when switching folders in the middle of
-            an update
 
 * River UX
+    * Real-time updates to feed display currently visible when new items come in.
     * Update folder nav list in response to bookmark observer seeing folder 
         add / move / remove
     * Rework flat list of functions for UI handling into object wrapped around
@@ -19,11 +17,13 @@ TODO
     * Pref for # of items on page
     * Sharing / read later / star it / flag it buttons
     * Make clicked / visited items disappear after a little while?
-    * Use infinite scroll, only load / render a pageful of items at a time
-        * https://github.com/paulirish/infinite-scroll
-        * Any way to use generators across the worker message channel separation?
 
 * Chrome UX
+    * Some indication that a feed refresh is in progress
+    * Switch from notification box to popup notification?
+        * https://developer.mozilla.org/en/Using_popup_notifications
+        * https://developer.mozilla.org/en/JavaScript_code_modules/PopupNotifications.jsm
+        * https://developer.mozilla.org/en/Components.utils.import
     * Find some better images for widget icons in addon-bar
     * Hide feed detection notification after a few seconds?
 
@@ -43,10 +43,15 @@ TODO
 [thin-server RSS sync]: http://inessential.com/2010/02/08/idea_for_alternative_rss_syncing_system
 
 * Misc
+    * Split feed detection / notification out into its own dedicated addon?
+    * Build a log of livemark feed processing events
+        * # of new items by date
+        * HTTP failures, feed parsing errors
+    * Delete / archive livemarks that fail 3-5 times?
+        * Could be problematic if machine is just offline, or some other global problem
     * Rework flat list of functions for UI handling into object wrapped around
         worker instance for index UI?
     * Allow filtering by tags on Live Bookmarks
-    * Allow subfolders in the "Fireriver Feeds" folder, filter by those
     * Configurable URL patterns for sites to ignore for feed detection
     * Currently deferring opening notification box until tab is visible - is
         there any way to open a notification box on a background tab?

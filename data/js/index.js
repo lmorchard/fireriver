@@ -1,15 +1,21 @@
 /**
  * Content script for index page UI
  */
+var ENTRIES_PAGE_LEN = 25;
+var pending_entries = [];
+var summary_frame_css = '';
     
 /** Set up listener for messages from chrome. */
 onMessage = function onMessage (event) {
     if ('undefined'==typeof(event.type)) { return; }
     switch (event.type) {
         case 'historyUpdate': historyUpdate(event); break;
-        case 'feedsUpdate': insertFeedEntries(event); break;
+        case 'feedsUpdate': feedsUpdate(event); break;
         case 'foldersUpdate': foldersUpdate(event); break;
         case 'hiddenFeedsUpdate': hiddenFeedsUpdate(event); break;
+        case 'summaryCSS':
+            summary_frame_css = event.src;
+            break;
         default: break;
     }
 };
@@ -21,7 +27,6 @@ function init () {
 
 /** React to page being ready, wire up UI handlers */
 function ready () {
-    $('time.timeago').timeago();
     wireUpLivemarkReload();
     wireUpFoldersNav();
     wireUpFeedEntries();
@@ -61,6 +66,7 @@ function selectFolder (folder_id) {
     $('nav.folders #folder-'+folder_id).addClass('selected');
 
     // Clear the display of entries in anticipation of an update.
+    $('body').addClass('loading');
     $('section.entries > ul').find('li:not(.template)').remove();
 
     // Clear hidden feeds in anticipation of updates.
@@ -189,11 +195,33 @@ function toggleSummaryReveal (feed_entry, force) {
         feed_entry.addClass('summary-loading');
         summary[0].src = src; 
         summary[0].addEventListener('load', function (ev) {
+            
             feed_entry.removeClass('summary-loading');
             feed_entry.addClass('summary-revealed');
+
+            var idoc = summary[0].contentDocument;
+            var ihead = idoc.getElementsByTagName("head")[0];
+
+            // HACK: Inject CSS into the iframe doc
+            var css_node = idoc.createElement('style');
+            css_node.type = 'text/css';
+            css_node.rel = 'stylesheet';
+            css_node.media = 'screen';
+
+            var css_src = idoc.createTextNode(summary_frame_css);
+            css_node.appendChild(css_src);
+            
+            ihead.appendChild(css_node);
+
+            // HACK: Inject base tag into iframe head to open links in new window.
+            var base_node = idoc.createElement('base');
+            base_node.href = "_blank";
+            ihead.appendChild(base_node);
+
             summary.animate({
-                height: summary[0].contentDocument.body.offsetHeight+8
+                height: summary[0].contentDocument.body.offsetHeight+16
             }, ANIM_TIME);
+
         }, true);
 
     }
@@ -213,8 +241,12 @@ function foldersUpdate (event, selected_id) {
     var root_el = $('.folders > ul.root');
 
     root_el.find('li:not(.template)').remove();
-    if (folders.length > 1) { $('.folders').show(); }
+    if (folders.length < 1) { 
+        $('.folders').hide(); 
+        return;
+    }
 
+    $('.folders').show(); 
     for (var i=0; i<folders.length; i++) {
         var [ folder_id, folder_title, parent_id ] = folders[i];
 
@@ -239,50 +271,39 @@ function foldersUpdate (event, selected_id) {
 
 }
 
-var INSERT_ENTRIES_CHUNK = 10;
-var current_update_fn = null;
-
-/**
- * Insert a big batch of feed entries in chunks.
- */
-function insertFeedEntries (event) {
-    var entries = event.entries;
-
-    ( function () {
-        var cb = arguments.callee;
-        for (var i=0; (i<INSERT_ENTRIES_CHUNK) && (entries.length); i++) {
-            entry = entries.pop();
-            try { insertFeedEntry(entry); }
-            catch (e) { console.error(e); }
-        }
-
-        $('time.timeago').timeago();
-        adjustFeedTitles();
-        
-        if (entries.length) { setTimeout(cb, 0.1); }
-    })();
-
+/** Load up the list of pending entries from event, show the first page */
+function feedsUpdate (event) {
+    pending_entries = event.entries;
+    $('section.entries > ul').find('li:not(.template)').remove();
+    insertPageOfPendingEntries();
 }
 
-/**
- * Reveal feed titles at the feed transition boundaries between entries.
- */
-function adjustFeedTitles () {
-    $('section.entries li.feed-entry').removeClass('feed-title-shown');
-    $('section.entries li.feed-entry').each(function () {
-        var entry = $(this);
-        var curr_feed_title = entry.find('.feedTitle');
-        var prev_feed_title = entry.prev('li').find('.feedTitle');
-        if (curr_feed_title.attr('data-feed-id') != prev_feed_title.attr('data-feed-id')) {
-            entry.addClass('feed-title-shown');
+/** Grab a page of pending entries and insert into the page */
+function insertPageOfPendingEntries () {
+    if (!pending_entries.length) { return; }
+
+    // Grab a page out of the pending entries.
+    var entries = pending_entries.splice(0, ENTRIES_PAGE_LEN);
+
+    $('body').addClass('loading');
+    setTimeout(function () {
+        for (var i=0, entry; entry = entries[i]; i++) {
+            insertEntry(entry);
         }
-    });
+        adjustFeedTitles();
+        $.timeago.settings.refreshMillis = 0;
+        $('time').timeago();
+        $('body').removeClass('loading');
+        $('.scrollBottom').appear(function () {
+            insertPageOfPendingEntries();
+        });
+    }, 0.1);
 }
 
 /**
  * insert a single feed entry.
  */
-function insertFeedEntry (entry) {
+function insertEntry (entry) {
     
     // Skip if this entry is already in the page.
     var entry_el_id = 'entry-'+entry.hash;
@@ -291,9 +312,9 @@ function insertFeedEntry (entry) {
     var feed = entry.feed;
 
     var tmpl_el = $('#template-feed-entry');
-    var par_el = $('section.entries ul');
+    var par_el = $('section.entries > ul');
 
-    var iso_published = ISODateString(new Date(entry.published));
+    var iso_published = ISODateString(new Date(entry.published/1000));
 
     var ns = {
         '@id': entry_el_id,
@@ -317,16 +338,32 @@ function insertFeedEntry (entry) {
 
     $('section.entries ul .published').each(function () {
         var el = $(this);
-        if (iso_published >= el.attr('datetime')) {
+        if (iso_published > el.attr('datetime')) {
             el.parent().before(new_el);
             new_el = null;
             return false;
         }
     });
+
     if (new_el) { 
         par_el.append(new_el);
     }
 
+}
+
+/**
+ * Reveal feed titles at the feed transition boundaries between entries.
+ */
+function adjustFeedTitles () {
+    $('section.entries li.feed-entry').removeClass('feed-title-shown');
+    $('section.entries li.feed-entry').each(function () {
+        var entry = $(this);
+        var curr_feed_title = entry.find('.feedTitle');
+        var prev_feed_title = entry.prev('li').find('.feedTitle');
+        if (curr_feed_title.attr('data-feed-id') != prev_feed_title.attr('data-feed-id')) {
+            entry.addClass('feed-title-shown');
+        }
+    });
 }
 
 /**

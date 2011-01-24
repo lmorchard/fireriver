@@ -32,10 +32,47 @@ header hgroup h1 a {
     line-height: 32px;
     background: transparent url(../img/blue-rss.png) no-repeat;
 }
+section.loading_overlay {
+    position: fixed;
+    width: 33%;
+    height: 18%;
+    top: 75%;
+    left: 33.5%;
+    opacity: 0.75;
+    background-color: rgba(0,0,0,1);
+    background-image: url(../img/ajax-loader-big.gif);
+    background-repeat: no-repeat;
+    background-position: 50% 80%;
+    z-index: 999;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.25) inset, 0 1px 2px rgba(0, 0, 0, 0.25);
+    display: none;
+}
+.loading section.loading_overlay {
+    display: block;
+}
+section.loading_overlay h2 {
+    position: absolute;
+    color: #fff;
+    top: 5%;
+    width: 100%;
+    text-align: center;
+    text-transform: uppercase;
+    text-shadow: 0 2px 2px rgba(0, 0, 0, 1);
+}
+section.loading_overlay p {
+    position: absolute;
+    color: #fff;
+    top: 28%;
+    width: 100%;
+    font-size: 10px;
+    text-align: center;
+    text-shadow: 0 2px 2px rgba(0, 0, 0, 1);
+}
 
 section.entries { 
     width: 750px;
-    min-height: 750px;
+    min-height: 950px;
     margin: 0 auto;
 
     -moz-box-sizing: border-box;
@@ -63,6 +100,9 @@ section.entries > ul li.feed-entry .favicon {
     position: absolute;
     left: 0px; 
     top: 0px;
+    background: rgba(255,255,255,0.5);
+    border-radius: 3px;
+    box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.25) inset, 0 1px 2px rgba(0, 0, 0, 0.25);
 }
 section.entries > ul li.feed-entry h3.feedTitle {
     display: none;
@@ -104,7 +144,7 @@ section.entries > ul li.feed-entry.feed-title-shown .favicon {
     position: absolute;
     height: 24px;
     width: 24px;
-    left: -10px; 
+    left: -12px; 
     top: 4px;
 }
 section.entries > ul li.feed-entry.feed-title-shown .published { 
@@ -166,7 +206,6 @@ section.entries > ul li.summary-revealed iframe.summary_wrap {
     display: block;
 }
 section.entries > ul li.summary-loading iframe.summary_wrap {
-    display: block;
 }
 section.entries > ul li.feed-entry .hideFeed { 
     position: absolute;
