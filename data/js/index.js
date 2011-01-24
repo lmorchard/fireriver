@@ -31,6 +31,7 @@ function ready () {
     wireUpFoldersNav();
     wireUpFeedEntries();
     wireUpHiddenFeeds();
+    wireUpScrollTrigger();
 }
 
 /** Wire up livemark reload button */
@@ -67,7 +68,6 @@ function selectFolder (folder_id) {
 
     // Clear the display of entries in anticipation of an update.
     $('body').addClass('loading');
-    $('section.entries > ul').find('li:not(.template)').remove();
 
     // Clear hidden feeds in anticipation of updates.
     $('.hidden-feeds > ul > li:not(.template)').remove();
@@ -162,6 +162,17 @@ function wireUpHiddenFeeds () {
         };
 
         return true;
+    });
+}
+
+/**
+ * Wire up a self-renewing trigger for entry pagination when scrolling reaches
+ * the bottom of the page. 
+ */
+function wireUpScrollTrigger () {
+    $('.scrollBottom').appear(function () {
+        insertPageOfPendingEntries();
+        setTimeout(wireUpScrollTrigger, 10);
     });
 }
 
@@ -298,9 +309,6 @@ function insertPageOfPendingEntries () {
         $.timeago.settings.refreshMillis = 0;
         $('time').timeago();
         $('body').removeClass('loading');
-        $('.scrollBottom').appear(function () {
-            insertPageOfPendingEntries();
-        });
     }, 0.1);
 }
 
