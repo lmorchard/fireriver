@@ -14,6 +14,11 @@ It's probably not worth using right now.
 * Fireriver will use Live Bookmarks in this folder to build a [River of News][]
     page. You can view it by clicking the blue feed icon in the add-on bar.
 
+* The space bar can be your main tool for paddling down the river.
+    * If you have a mouse with a scroll wheel, that's great.
+    * The page down key works too, if you have it.  But, it's tiny.
+    * Shift-space lets you back-paddle if you need to.
+
 * You can add and remove Live Bookmarks in this folder like any other bookmark
     folder. The changes will be reflected in the river of news display.
 

@@ -3,9 +3,12 @@ TODO
 
 * Bugs
     * Revisit real-time updates, which seem broken now with folder views
+    * Does feed hiding actually work well?
 
 * River UX
-    * Disable / hide summary reveal control where summary content is missing
+    * Should seen items further up the page get removed from the DOM after
+        awhile, to clear up memory for infinite scroll?
+        * Can I reverse-infinite-scroll to get them back?
     * Real-time updates to feed display currently visible when new items come in.
     * Update folder nav list in response to bookmark observer seeing folder 
         add / move / remove
@@ -13,10 +16,17 @@ TODO
         worker instance for index UI
     * Make page header float down along with scrolling, anticipating that it
         may hold UI controls in the very near future
+    * Make folder nav sidebar float down with scrolling.
+        * CSS position:fixed seems the way, but can't be relatively position to
+            centered river display?
+    * Find a way to make feed title dividers float down, so that it stays
+        visible as long as items from that feed are visible.
     * Add first-run panel with doco on the addon, hide after first run
     * Preference for iframes auto-expanding when visible
     * Pref for # of items on page
     * Sharing / read later / star it / flag it buttons
+        * Store read-later items as plain old bookmarks in another bookmark folder?
+        * Star as annotation for filtering?
     * Make clicked / visited items disappear after a little while?
     * Key modifier (eg. alt?) to toggle summaries for entries within a feed?
 
