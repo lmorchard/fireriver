@@ -16,9 +16,6 @@ TODO
         worker instance for index UI
     * Make page header float down along with scrolling, anticipating that it
         may hold UI controls in the very near future
-    * Make folder nav sidebar float down with scrolling.
-        * CSS position:fixed seems the way, but can't be relatively position to
-            centered river display?
     * Find a way to make feed title dividers float down, so that it stays
         visible as long as items from that feed are visible.
     * Add first-run panel with doco on the addon, hide after first run

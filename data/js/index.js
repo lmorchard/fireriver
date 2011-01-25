@@ -31,6 +31,7 @@ function ready () {
     wireUpFoldersNav();
     wireUpFeedEntries();
     wireUpHiddenFeeds();
+    wireUpFixedNavElements();
     wireUpScrollTrigger();
 }
 
@@ -40,6 +41,30 @@ function wireUpLivemarkReload () {
         postMessage({ type: 'reloadAllLivemarks' });
         return false;
     });
+}
+
+function wireUpFixedNavElements () {
+    //$('header').css('position', 'fixed');
+    $('nav.folders').css('position', 'fixed');
+    updateFixedNavElementsPosition();
+    $(window).resize(updateFixedNavElementsPosition);
+    $(window).scroll(updateFixedNavElementsPosition);
+}
+
+function updateFixedNavElementsPosition () {
+    var e = $('section.entries');
+    var st = $(window).scrollTop();
+
+    /*
+    e.css('margin-top', $('header').outerHeight());
+    $('header')
+        .css('z-index', '999')
+        .css('top', Math.max(0, 5 - st))
+        .css('left', e.offset().left);
+    */
+    $('nav.folders')
+        .css('left', e.offset().left + e.outerWidth())
+        .css('top', Math.max(75, e.position().top - st));
 }
 
 /** Wire up folder selection links */
