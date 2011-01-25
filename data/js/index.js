@@ -37,10 +37,12 @@ function ready () {
 
 /** Wire up livemark reload button */
 function wireUpLivemarkReload () {
+    /*
     $('.reloadAllLivemarks').click(function (ev) {
         postMessage({ type: 'reloadAllLivemarks' });
         return false;
     });
+    */
 }
 
 function wireUpFixedNavElements () {
