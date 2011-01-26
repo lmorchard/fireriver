@@ -4,8 +4,6 @@ This is an experiment at building a magical River of news in Firefox.
 
 It's probably not worth using right now.
 
-![http://cloud.github.com/downloads/lmorchard/fireriver/Screen%20shot%202011-01-26%20at%205.01.56%20PM.png](Screenshot)
-
 ## Tips / Notes / Goals
 
 * Fireriver will alert you whenever it notices a feed on any page you visit, and
