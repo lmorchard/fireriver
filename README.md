@@ -4,7 +4,7 @@ This is an experiment at building a magical River of news in Firefox.
 
 It's probably not worth using right now; but it might look like this:
 
-![Screenshot](http://cloud.github.com/downloads/lmorchard/fireriver/Screen%20shot%202011-01-26%20at%205.01.56%20PM.png)
+![Screenshot](https://github.com/downloads/lmorchard/fireriver/Screen%20shot%202011-01-26%20at%205.01.56%20PM.png)
 
 ## Tips / Notes / Goals
 
